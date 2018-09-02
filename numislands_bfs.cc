@@ -30,12 +30,18 @@ using namespace std;
 //   Apply BFS for all the connected 1's in the grid.
 //   Number of BFS runs constitutes the number of islands present in the grid.
 
-int numislands(vector<vector<int>> & grid) {
-  int row = grid.size();
-  int col = grid[0].size();
+int numislands(vector<vector<char>> & grid) {
+
+  int row;
+  int col;
   int island = 0;
   queue<int> q_row;
   queue<int> q_col;
+
+  if(grid.empty()) return 0;
+  row = grid.size();
+  col = grid[0].size();
+
   vector<vector<bool>> visited(row, vector<bool>(col, false));
 
   // Invalid input
@@ -45,7 +51,7 @@ int numislands(vector<vector<int>> & grid) {
   for (int i=0; i < row; ++i) {
     for(int j=0; j<col; ++j) {
 
-      if(!grid[i][j]) continue;
+      if(grid[i][j] == '0') continue;
       if(visited[i][j]) continue;
 
       q_row.push(i);
@@ -57,25 +63,25 @@ int numislands(vector<vector<int>> & grid) {
 
         cout << "Analysing: " << ii << " " << jj << endl;
 
-        if(ii+1<row && grid[ii+1][jj] == 1 && !visited[ii+1][jj]) {
+        if(ii+1<row && grid[ii+1][jj] == '1' && !visited[ii+1][jj]) {
           q_row.push(ii+1);
           q_col.push(jj);
           visited[ii+1][jj] = true;
         }
 
-        if(jj+1<col && grid[ii][jj+1] == 1 && !visited[ii][jj+1]) {
+        if(jj+1<col && grid[ii][jj+1] == '1' && !visited[ii][jj+1]) {
           q_row.push(ii);
           q_col.push(jj+1);
           visited[ii][jj+1] = true;
         }
 
-        if(ii-1>=0 && grid[ii-1][jj] == 1 && !visited[ii-1][jj]) {
+        if(ii-1>=0 && grid[ii-1][jj] == '1' && !visited[ii-1][jj]) {
           q_row.push(ii-1);
           q_col.push(jj);
           visited[ii-1][jj] = true;
         }
 
-        if(jj-1>=0 && grid[ii][jj-1] == 1 && !visited[ii][jj-1]) {
+        if(jj-1>=0 && grid[ii][jj-1] == '1' && !visited[ii][jj-1]) {
           q_row.push(ii);
           q_col.push(jj-1);
           visited[ii][jj-1] = true;
@@ -95,6 +101,7 @@ int numislands(vector<vector<int>> & grid) {
 
 int main(int argc, char *argv[])
 {
+  #if 0
   vector<vector<int>> grid = {
     {1,1,1,1,0},
     {1,1,0,1,0},
@@ -113,12 +120,12 @@ int main(int argc, char *argv[])
   int num_islands = numislands(grid);
 
   cout << "Number of islands: " << num_islands << endl;
-
-  vector<vector<int>> grid1 = {
-    {1,1,0,0,0},
-    {1,1,0,0,0},
-    {0,0,1,0,0},
-    {0,0,0,1,1}
+#endif
+  vector<vector<char>> grid1 = {
+    {'1','1','0','0','0'},
+    {'1','1','0','0','0'},
+    {'0','0','1','0','0'},
+    {'0','0','0','1','1'}
   };
 
   cout << "Input: " << endl;
@@ -129,7 +136,7 @@ int main(int argc, char *argv[])
     cout << endl;
   }
 
-  num_islands = numislands(grid1);
+  int num_islands = numislands(grid1);
   cout << "Number of islands: " << num_islands << endl;
 
   return 0;
