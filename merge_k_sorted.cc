@@ -72,11 +72,13 @@ Node * sortedMergeList(Node *a, Node *b)
     if(a->data <= b->data)
     {
         result = a;
-        result = sortedMergeList(a->next, b);
+        result->next = sortedMergeList(a->next, b);
     } else {
         result = b;
-        result = sortedMergeList(a, b->next);
+        result->next = sortedMergeList(a, b->next);
     }
+
+    return result;
 }
 
 // arr[0..last] and generates the sorted output
