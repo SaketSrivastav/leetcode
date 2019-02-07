@@ -38,6 +38,53 @@ vector<vector<int>> merge_intervals(vector<vector<int>> * intervals)
 
     return result;
 }
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class IntervalCompare {
+    public:
+    int operator () (Interval& i1, Interval& i2) {
+        return i1.start > i2.start;
+    }
+};
+
+// Use priority queue for sorting
+vector<Interval> merge(vector<Interval>& intervals) {
+    if(intervals.empty()) return {};
+    if(intervals.size() == 1) return intervals;
+
+    // Sort them based on starting time
+    priority_queue<Interval, vector<Interval>, IntervalCompare> pq;
+    for(auto interval : intervals)
+        pq.push(interval);
+
+    vector<Interval> result = {};
+    result.push_back(pq.top());
+    pq.pop();
+
+    // move ahead till we encounter end time of first interval is greater than
+    // start time of following interval
+    while(!pq.empty()) {
+        Interval temp = pq.top();
+        pq.pop();
+
+        // When that happens we create 1 single interval with start time of
+        // first interval and end time of last interval which satisfied the
+        // condition
+        if(temp.start <= result.back().end)
+            result.back().end = max(result.back().end, temp.end);
+        else
+            result.push_back(temp);
+    }
+
+    return result;
+}
 
 int main(int argc, char *argv[])
 {
