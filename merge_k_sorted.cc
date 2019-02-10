@@ -61,72 +61,45 @@ vector<int> mergeKSortedList(vector<vector<int>> * inputArr, int n)
     return result;
 }
 
-// Sorts a single list and stores in 1 of the list
-Node * sortedMergeList(Node *a, Node *b)
-{
-    Node * result = NULL;
-
-    if( a == NULL ) return b;
-    if ( b == NULL ) return a;
-
-    if(a->data <= b->data)
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+// T = O(n) S = O(1)
+class Solution {
+public:
+    // Method to do merge of 2 sorted lists
+    ListNode* merge2Lists(ListNode* l1, ListNode* l2)
     {
-        result = a;
-        result->next = sortedMergeList(a->next, b);
-    } else {
-        result = b;
-        result->next = sortedMergeList(a, b->next);
-    }
+        if(l1 == NULL) return l2;
+        if(l2 == NULL) return l1;
 
-    return result;
-}
-
-// arr[0..last] and generates the sorted output
-Node* mergeKLists(Node* arr[], int last)
-{
-    // repeat until only one list is left
-    while (last != 0)
-    {
-        int i = 0, j = last;
-
-        // (i, j) forms a pair
-        while (i < j)
-        {
-            // merge List i with List j and store
-            // merged list in List i
-            arr[i] = SortedMerge(arr[i], arr[j]);
-
-            // consider next pair
-            i++, j--;
-
-            // If all pairs are merged, update last
-            if (i >= j)
-                last = j;
+        // Add nodes to first list
+        if(l1->val <= l2->val) {
+            l1->next = merge2Lists(l1->next, l2);
+            return l1;
         }
+
+        // Add nodes to second list
+        l2->next = merge2Lists(l1, l2->next);
+        return l2;
     }
 
-    return arr[0];
-}
+    // Apply merge2sorted list to merge k sorted list without using heap
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.size() == 0) return NULL;
+        if(lists.size() == 1) return lists[0];
 
-int main(int argc, char *argv[])
-{
-    vector<vector<int>> test1 = {{1,3,5,7,9}, {2,4,6,8}, {0,10,12}};
-    cout << "test1: [";
-    for(auto list : test1) {
-        cout << "[";
-        for(auto num : list) {
-            cout << num << " ";
+        while(lists.size() > 1) {
+            lists.push_back(merge2Lists(lists[0], lists[1]));
+            lists.erase(lists.begin()); // remove lists[0]
+            lists.erase(lists.begin()); // remove lists[1]
         }
-        cout << "], " << endl;
-    }
-    cout << "]" << endl;
-    vector<int> result1 = mergeKSortedList(&test1, 5);
 
-    cout << "Result1: ";
-    for(auto num : result1) {
-        cout << num << " ";
+        return lists.front();
     }
-    cout << endl;
-
-    return 0;
-}
+};
